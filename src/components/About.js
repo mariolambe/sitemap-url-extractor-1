@@ -10,13 +10,6 @@ export const About = () => {
           The Sitemap URL Extractor is a React app that helps you extract URLs from sitemap XML files.
           It works also with sitemap index files (example: <Link href="https://www.google.com/sitemap.xml" isExternal color="blue.500">Google Sitemap</Link>).
         </Text>
-        <Text>
-          If you want to explore alternative ways (for example via Google sheets, Screaming Frog, command line) check out this article on{' '}
-          <Link href="https://www.mariolambertucci.com/how-to-extract-urls-from-sitemaps/" isExternal color="blue.500">
-            How to extract URLs from sitemaps
-          </Link>
-          .
-        </Text>
         <Text fontWeight="bold">What is a Sitemap URL Extractor?</Text>
         <Text>
           A sitemap URL extractor is a tool that helps users quickly access all the URLs listed within an XML sitemap file. These URLs represent the pages a website owner wants search engines to crawl and index.
@@ -85,6 +78,13 @@ export const About = () => {
         </Text>
         <Text>
           - Can I extract sitemaps from competitor websites? Yes, if the competitor's sitemap is public and accessible.
+        </Text>
+    <Text>
+          If you want to explore alternative ways (for example via Google sheets, Screaming Frog, command line) check out this article on{' '}
+          <Link href="https://www.mariolambertucci.com/how-to-extract-urls-from-sitemaps/" isExternal color="blue.500">
+            How to extract URLs from sitemaps
+          </Link>
+          .
         </Text>
         <Text fontWeight="bold">About Author</Text>
         <Text>
