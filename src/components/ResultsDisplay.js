@@ -1,9 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, VStack, HStack, Input, Select, UnorderedList, ListItem } from '@chakra-ui/react';
-import { UrlClusterView } from './UrlClusterView';  // Make sure to import the new component
+import { UrlClusterView } from './UrlClusterView';  // Ensure this path is correct
 
 export const ResultsDisplay = ({ urls, isLoading, error }) => {
-  // ... (previous state variables and functions remain the same)
+  const [filteredUrls, setFilteredUrls] = useState(urls);
+  const [filterText, setFilterText] = useState('');
+  const [exportFormat, setExportFormat] = useState('txt');
+  const [showExportOptions, setShowExportOptions] = useState(false);
+
+  useEffect(() => {
+    setFilteredUrls(urls);
+    setShowExportOptions(urls.length > 0);
+  }, [urls]);
+
+  const handleFilterChange = (e) => {
+    const text = e.target.value;
+    setFilterText(text);
+    setFilteredUrls(urls.filter(url => url.toLowerCase().includes(text.toLowerCase())));
+  };
+
+  const handleExport = () => {
+    // Implement export logic here
+    console.log('Exporting URLs in format:', exportFormat);
+  };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text color="red.500">{error}</Text>;
+  }
 
   return (
     <VStack align="stretch" spacing={4}>
@@ -11,7 +38,7 @@ export const ResultsDisplay = ({ urls, isLoading, error }) => {
       
       {showExportOptions && (
         <>
-          <UrlClusterView urls={urls} />  {/* Add the UrlClusterView component here */}
+          <UrlClusterView urls={urls} />
           
           <Input
             placeholder="Filter URLs..."
