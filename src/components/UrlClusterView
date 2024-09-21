@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Button, Text, Select } from '@chakra-ui/react';
 
-export const UrlClusterView = ({ urls }) => {
+const UrlClusterView = ({ urls }) => {
   const [clusters, setClusters] = useState([]);
   const [filterBy, setFilterBy] = useState('');
 
@@ -85,3 +85,5 @@ export const UrlClusterView = ({ urls }) => {
     </Box>
   );
 };
+
+export default UrlClusterView;
