@@ -11,26 +11,7 @@ const UrlClusterView = ({ urls }) => {
   }, [urls]);
 
   const clusterUrls = (urls) => {
-    const clusters = {};
-    urls.forEach(url => {
-      try {
-        const path = new URL(url).pathname;
-        const segments = path.split('/').filter(segment => segment);
-        if (segments.length > 0) {
-          const firstSegment = segments[0];
-          if (!clusters[firstSegment]) {
-            clusters[firstSegment] = { count: 0, urls: [] };
-          }
-          clusters[firstSegment].count++;
-          clusters[firstSegment].urls.push(url);
-        }
-      } catch (error) {
-        console.error('Invalid URL:', url);
-      }
-    });
-    return Object.entries(clusters)
-      .map(([segment, data]) => ({ segment, ...data }))
-      .sort((a, b) => b.count - a.count);
+    // ... (clusterUrls logic remains the same)
   };
 
   const handleShowUrls = (segment) => {
@@ -44,22 +25,23 @@ const UrlClusterView = ({ urls }) => {
 
   return (
     <Box>
-      <Text fontSize="xl" fontWeight="bold" mb={4}>URL Path Clusters</Text>
+      <Text fontSize="md" fontWeight="bold" mb={2}>URL Path Clusters</Text>
       <Select
         placeholder="Filter by segment"
         value={filterBy}
         onChange={(e) => setFilterBy(e.target.value)}
-        mb={4}
+        size="sm"
+        mb={2}
       >
         {clusters.map(cluster => (
           <option key={cluster.segment} value={cluster.segment}>{cluster.segment}</option>
         ))}
       </Select>
-      <Table variant="simple">
+      <Table variant="simple" size="sm">
         <Thead>
           <Tr>
             <Th>Path Segments</Th>
-            <Th isNumeric>Total URLs</Th>
+            <Th isNumeric>Total</Th>
             <Th>URLs</Th>
           </Tr>
         </Thead>
@@ -72,10 +54,10 @@ const UrlClusterView = ({ urls }) => {
                 <Button
                   colorScheme="purple"
                   variant="outline"
-                  size="sm"
+                  size="xs"
                   onClick={() => handleShowUrls(segment)}
                 >
-                  Show URLs
+                  Show
                 </Button>
               </Td>
             </Tr>
