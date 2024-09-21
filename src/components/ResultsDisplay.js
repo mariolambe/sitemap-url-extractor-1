@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Code, Button, VStack, Spinner } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, Spinner, UnorderedList, ListItem } from '@chakra-ui/react';
 
 export const ResultsDisplay = ({ urls, isLoading, error }) => {
   if (isLoading) {
@@ -38,9 +38,15 @@ export const ResultsDisplay = ({ urls, isLoading, error }) => {
   return (
     <VStack align="stretch" spacing={4}>
       <Text fontWeight="bold">Extracted {urls.length} URLs:</Text>
-      <Code p={4} borderRadius="md" maxHeight="400px" overflowY="auto">
-        {urls.join('\n')}
-      </Code>
+      <Box maxHeight="400px" overflowY="auto" borderWidth={1} borderRadius="md" p={4}>
+        <UnorderedList spacing={2} styleType="none" margin={0}>
+          {urls.map((url, index) => (
+            <ListItem key={index} fontSize="sm" fontFamily="monospace">
+              {url}
+            </ListItem>
+          ))}
+        </UnorderedList>
+      </Box>
       <Button onClick={handleDownload} colorScheme="green">
         Download URLs
       </Button>
