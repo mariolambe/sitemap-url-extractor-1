@@ -1,0 +1,84 @@
+import React, { useState, useEffect } from 'react';
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Button, Text, Select } from '@chakra-ui/react';
+
+export const UrlClusterView = ({ urls }) => {
+  const [clusters, setClusters] = useState([]);
+  const [filterBy, setFilterBy] = useState('');
+
+  useEffect(() => {
+    const clusteredUrls = clusterUrls(urls);
+    setClusters(clusteredUrls);
+  }, [urls]);
+
+  const clusterUrls = (urls) => {
+    const clusters = {};
+    urls.forEach(url => {
+      const path = new URL(url).pathname;
+      const segments = path.split('/').filter(segment => segment);
+      if (segments.length > 0) {
+        const firstSegment = segments[0];
+        if (!clusters[firstSegment]) {
+          clusters[firstSegment] = { count: 0, urls: [] };
+        }
+        clusters[firstSegment].count++;
+        clusters[firstSegment].urls.push(url);
+      }
+    });
+    return Object.entries(clusters)
+      .map(([segment, data]) => ({ segment, ...data }))
+      .sort((a, b) => b.count - a.count);
+  };
+
+  const handleShowUrls = (segment) => {
+    // Implement logic to show URLs for the selected segment
+    console.log(`Show URLs for segment: ${segment}`);
+    // You might want to update the parent component's state or use a modal to display these URLs
+  };
+
+  const filteredClusters = filterBy
+    ? clusters.filter(cluster => cluster.segment.includes(filterBy))
+    : clusters;
+
+  return (
+    <Box>
+      <Text fontSize="xl" fontWeight="bold" mb={4}>URL Path Clusters</Text>
+      <Select
+        placeholder="Filter by segment"
+        value={filterBy}
+        onChange={(e) => setFilterBy(e.target.value)}
+        mb={4}
+      >
+        {clusters.map(cluster => (
+          <option key={cluster.segment} value={cluster.segment}>{cluster.segment}</option>
+        ))}
+      </Select>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Path Segments</Th>
+            <Th isNumeric>Total URLs</Th>
+            <Th>URLs</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {filteredClusters.map(({ segment, count, urls }) => (
+            <Tr key={segment}>
+              <Td>{segment}</Td>
+              <Td isNumeric>{count}</Td>
+              <Td>
+                <Button
+                  colorScheme="purple"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleShowUrls(segment)}
+                >
+                  Show URLs
+                </Button>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
+  );
+};
