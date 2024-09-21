@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, VStack, HStack, Input, Select, UnorderedList, ListItem } from '@chakra-ui/react';
-import { UrlClusterView } from './UrlClusterView';  // Ensure this path is correct
+import UrlClusterView from './UrlClusterView';  // Make sure this path is correct
 
 export const ResultsDisplay = ({ urls, isLoading, error }) => {
   const [filteredUrls, setFilteredUrls] = useState(urls);
@@ -20,8 +20,41 @@ export const ResultsDisplay = ({ urls, isLoading, error }) => {
   };
 
   const handleExport = () => {
-    // Implement export logic here
-    console.log('Exporting URLs in format:', exportFormat);
+    let content;
+    let filename;
+    let type;
+
+    switch (exportFormat) {
+      case 'csv':
+        content = filteredUrls.join('\n');
+        filename = 'urls.csv';
+        type = 'text/csv';
+        break;
+      case 'json':
+        content = JSON.stringify(filteredUrls, null, 2);
+        filename = 'urls.json';
+        type = 'application/json';
+        break;
+      case 'xml':
+        content = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${filteredUrls.map(url => `  <url>\n    <loc>${url}</loc>\n  </url>`).join('\n')}\n</urlset>`;
+        filename = 'sitemap.xml';
+        type = 'application/xml';
+        break;
+      default:
+        content = filteredUrls.join('\n');
+        filename = 'urls.txt';
+        type = 'text/plain';
+    }
+
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   if (isLoading) {
