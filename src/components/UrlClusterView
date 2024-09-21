@@ -13,15 +13,19 @@ export const UrlClusterView = ({ urls }) => {
   const clusterUrls = (urls) => {
     const clusters = {};
     urls.forEach(url => {
-      const path = new URL(url).pathname;
-      const segments = path.split('/').filter(segment => segment);
-      if (segments.length > 0) {
-        const firstSegment = segments[0];
-        if (!clusters[firstSegment]) {
-          clusters[firstSegment] = { count: 0, urls: [] };
+      try {
+        const path = new URL(url).pathname;
+        const segments = path.split('/').filter(segment => segment);
+        if (segments.length > 0) {
+          const firstSegment = segments[0];
+          if (!clusters[firstSegment]) {
+            clusters[firstSegment] = { count: 0, urls: [] };
+          }
+          clusters[firstSegment].count++;
+          clusters[firstSegment].urls.push(url);
         }
-        clusters[firstSegment].count++;
-        clusters[firstSegment].urls.push(url);
+      } catch (error) {
+        console.error('Invalid URL:', url);
       }
     });
     return Object.entries(clusters)
@@ -30,9 +34,8 @@ export const UrlClusterView = ({ urls }) => {
   };
 
   const handleShowUrls = (segment) => {
-    // Implement logic to show URLs for the selected segment
     console.log(`Show URLs for segment: ${segment}`);
-    // You might want to update the parent component's state or use a modal to display these URLs
+    // Implement logic to show URLs for the selected segment
   };
 
   const filteredClusters = filterBy
@@ -61,7 +64,7 @@ export const UrlClusterView = ({ urls }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {filteredClusters.map(({ segment, count, urls }) => (
+          {filteredClusters.map(({ segment, count }) => (
             <Tr key={segment}>
               <Td>{segment}</Td>
               <Td isNumeric>{count}</Td>
