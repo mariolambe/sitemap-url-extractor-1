@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChakraProvider, Box, VStack, Heading, Text, useToast } from '@chakra-ui/react';
+import { ChakraProvider, Box, VStack, Heading, Text, useToast, useColorMode, Button } from '@chakra-ui/react';
+import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 import { SitemapForm } from './components/SitemapForm';
 import { ResultsDisplay } from './components/ResultsDisplay';
 import { About } from './components/About';
@@ -9,6 +10,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const handleExtract = async (sitemapUrl) => {
     setIsLoading(true);
@@ -52,9 +54,14 @@ function App() {
     <ChakraProvider>
       <Box maxWidth="1200px" margin="auto" padding={8}>
         <VStack spacing={8} align="stretch">
-          <Heading as="h1" size="2xl" textAlign="center">
-            Sitemap URL Extractor 😎
-          </Heading>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Heading as="h1" size="2xl">
+              Sitemap URL Extractor 😎
+            </Heading>
+            <Button onClick={toggleColorMode}>
+              {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            </Button>
+          </Box>
           <Text fontSize="lg" textAlign="center">
             Enter the URL of your sitemap XML file below and click "Extract" to get all URLs.
           </Text>
