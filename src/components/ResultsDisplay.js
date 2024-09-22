@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, VStack, HStack, Input, Select, UnorderedList, ListItem, Collapse, useDisclosure } from '@chakra-ui/react';
 
 export const ResultsDisplay = ({ urls, isLoading, error }) => {
   const [filteredUrls, setFilteredUrls] = useState(urls);
   const [filterText, setFilterText] = useState('');
   const [exportFormat, setExportFormat] = useState('txt');
-  const { isOpen, onToggle } = useDisclosure();
 
   useEffect(() => {
-    console.log("URLs received in ResultsDisplay:", urls);
     setFilteredUrls(urls);
   }, [urls]);
 
@@ -19,63 +16,83 @@ export const ResultsDisplay = ({ urls, isLoading, error }) => {
   };
 
   const handleExport = () => {
-    // ... (export logic remains the same)
+    let content = '';
+    switch (exportFormat) {
+      case 'txt':
+        content = filteredUrls.join('\n');
+        break;
+      case 'csv':
+        content = 'URL\n' + filteredUrls.join('\n');
+        break;
+      case 'json':
+        content = JSON.stringify(filteredUrls, null, 2);
+        break;
+      case 'xml':
+        content = `<?xml version="1.0" encoding="UTF-8"?>\n<urls>\n${filteredUrls.map(url => `  <url>${url}</url>`).join('\n')}\n</urls>`;
+        break;
+    }
+    const blob = new Blob([content], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `exported_urls.${exportFormat}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   if (isLoading) {
-    return <Text>Loading... Please wait while we extract URLs.</Text>;
+    return <p>Loading... Please wait while we extract URLs.</p>;
   }
 
   if (error) {
-    return <Text color="red.500">Error: {error}</Text>;
+    return <p style={{ color: 'red' }}>Error: {error}</p>;
   }
 
   return (
-    <VStack align="stretch" spacing={4}>
-      <Text fontWeight="bold">
+    <div className="flex flex-col space-y-4">
+      <p className="font-bold">
         {urls.length > 0 
           ? `Extracted ${urls.length} URLs:`
           : "No URLs extracted. Please check the sitemap URL and try again."}
-      </Text>
+      </p>
       
       {urls.length > 0 && (
         <>
-          <Input
+          <input
+            className="border p-2 rounded"
             placeholder="Filter URLs..."
             value={filterText}
             onChange={handleFilterChange}
           />
-          <Box maxHeight="300px" overflowY="auto" borderWidth={1} borderRadius="md" p={2}>
-            <UnorderedList styleType="none" margin={0} spacing={1}>
+          <div className="max-h-[300px] overflow-y-auto border rounded p-2">
+            <ul className="list-none m-0 space-y-1">
               {filteredUrls.map((url, index) => (
-                <ListItem key={index} fontSize="sm" fontFamily="monospace">
+                <li key={index} className="text-sm font-mono">
                   {url}
-                </ListItem>
+                </li>
               ))}
-            </UnorderedList>
-          </Box>
-          <HStack>
-            <Select value={exportFormat} onChange={(e) => setExportFormat(e.target.value)}>
+            </ul>
+          </div>
+          <div className="flex space-x-2">
+            <select 
+              className="border p-2 rounded"
+              value={exportFormat} 
+              onChange={(e) => setExportFormat(e.target.value)}
+            >
               <option value="txt">Text</option>
               <option value="csv">CSV</option>
               <option value="json">JSON</option>
               <option value="xml">XML</option>
-            </Select>
-            <Button onClick={handleExport} colorScheme="green">
+            </select>
+            <button 
+              onClick={handleExport} 
+              className="bg-green-500 text-white p-2 rounded"
+            >
               Export URLs
-            </Button>
-          </HStack>
-          
-          <Button onClick={onToggle} size="sm" variant="outline">
-            {isOpen ? "Hide" : "Show"} URL Path Clusters
-          </Button>
-          <Collapse in={isOpen} animateOpacity>
-            <Box borderWidth={1} borderRadius="md" p={2}>
-              <UrlClusterView urls={urls} />
-            </Box>
-          </Collapse>
+            </button>
+          </div>
         </>
       )}
-    </VStack>
+    </div>
   );
 };
