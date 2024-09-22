@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Button, VStack, HStack, Input, Select, UnorderedList, ListItem, Collapse, useDisclosure } from '@chakra-ui/react';
-import UrlClusterView from './UrlClusterView';
 
 export const ResultsDisplay = ({ urls, isLoading, error }) => {
   const [filteredUrls, setFilteredUrls] = useState(urls);
